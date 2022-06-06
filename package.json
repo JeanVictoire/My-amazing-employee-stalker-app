@@ -1,0 +1,27 @@
+{
+  "name": "my-amazing-employee-stalker-app",
+  "version": "1.0.0",
+  "description": "The application allows users to view and add information about employees and store it in a database.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JeanVictoire/My-amazing-employee-stalker-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JeanVictoire/My-amazing-employee-stalker-app/issues"
+  },
+  "homepage": "https://github.com/JeanVictoire/My-amazing-employee-stalker-app#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.16"
+  }
+}
