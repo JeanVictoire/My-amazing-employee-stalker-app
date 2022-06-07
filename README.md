@@ -28,6 +28,10 @@ Navigate to the folder of the project files and run node server.js or npm start 
 
 ## Video/Screenshot
 
+[Link to the Google drive video](https://drive.google.com/file/d/1s4x8ocaanvgyvayhbk6lqpcis8bhtcj5/view)
+
+<img src="./My-amazing-employee-stalker-app.gif" alt="My-amazing-employee-stalker-app" height="500">
+
 Application preview:
 
 ## Credits
