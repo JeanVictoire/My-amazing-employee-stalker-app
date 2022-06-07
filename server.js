@@ -1,4 +1,4 @@
-// Import and require inquirer,mysql2,console.table
+// Import and require inquirer,mysql2,console.table,util,config.
 const consoleTable = require('console.table');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
@@ -18,7 +18,7 @@ const  askUser = () => {
         {
           name: 'choices',
           type: 'list',
-          message: 'What would you like to do?',
+          message: 'What would you like to do ❓',
           choices: [
             'View all departments',
             'View all roles',
@@ -27,7 +27,7 @@ const  askUser = () => {
             'Add a department',
             'Add a role',
             'Add an employee',
-            'Exit'
+            'Exit ❌'
             ]
         }
       ])
@@ -62,7 +62,7 @@ const  askUser = () => {
               addEmployee();
           }
   
-          if (choices === 'Exit') {
+          if (choices === 'Exit ❌') {
               connection.end();
           }
     });
@@ -73,7 +73,7 @@ const viewAllDepartments = () => {
     const sql = `SELECT departments.id AS id, departments.name AS departments FROM departments`; 
       connection.query(sql, (error, response) => {
       if (error) throw error;
-      console.log(`Here is all the DEPARTMENTS:`);
+      console.log(`Here is all the DEPARTMENTS 📋:`);
       console.table(response);
       askUser();
     });
@@ -81,7 +81,7 @@ const viewAllDepartments = () => {
 
 // View all Roles
 const viewAllRoles = () => {
-    console.log(`Here is all the ROLES:`);
+    console.log(`Here is all the ROLES 📋:`);
     const sql = `SELECT id AS id, title AS title, salary As salary FROM roles;`;
     connection.query(sql, (error, response) => {
       if (error) throw error;
@@ -100,12 +100,69 @@ const viewAllEmployees = () => {
   
     connection.query(sql, (error, response) => {
       if (error) throw error;
-      console.log(`Here is all the EMPLOYEES:`);
+      console.log(`Here is all the EMPLOYEES 📋:`);
       console.table(response);
       askUser();
     });
   };
 
+
+// Update Employee Role
+
+const getEmployeesList = async () => {
+  const results = await query(`SELECT id AS value, CONCAT_WS(' ', first_name, last_name) AS name FROM employees;`);
+
+  return JSON.parse(JSON.stringify(results));
+}
+
+const getRolesList = async () => {
+  const results = await query(`SELECT id AS value, title AS name FROM roles;`);
+
+  return JSON.parse(JSON.stringify(results));
+}
+
+const getEmployeeRoleById = async (employeeId) => {
+  const results = await query(`SELECT title FROM roles
+      WHERE id = (SELECT role_id FROM employees WHERE id = ?);`, [employeeId]);
+
+  return results[0].title;
+}
+
+const updateEmployeeRole = async () => {
+  const employeesList = await getEmployeesList();
+
+  const { employeeId } = await inquirer.prompt({
+          name: 'employeeId',
+          type: 'list',
+          message: `Select the employee:`,
+          choices: employeesList,
+      });
+
+  const currentRole = await getEmployeeRoleById(employeeId);
+
+  const { isContinue } = await inquirer.prompt({
+      name: 'isContinue',
+      type: 'confirm',
+      message: `The employee's current role is '${currentRole}'. Do you want update it?`,
+  });
+
+  if (isContinue) {
+      const rolesList = await getRolesList();
+
+      const { roleId } = await inquirer.prompt({
+          name: 'roleId',
+          type: 'list',
+          message: `Select the new employee's role`,
+          choices: rolesList,
+      });
+
+      await query(`UPDATE employees SET role_id = ? WHERE id = ?;`, [roleId, employeeId]);
+
+      console.log(`The employee's role updated!\n`);
+  }
+
+  askUser();
+}
 
 // Add a department
 const addDepartment = () => {
@@ -121,7 +178,7 @@ const addDepartment = () => {
         let sql = `INSERT INTO departments (name) VALUES (?)`;
         connection.query(sql, answer.addDepartment, (error, response) => {
           if (error) throw error;
-          console.log(`The new department was created successfully.`);
+          console.log(`Your new department was created successfully.✔️`);
           viewAllDepartments();
         });
       });
@@ -163,7 +220,7 @@ const addRole = () => {
               {
                 name: 'salary',
                 type: 'input',
-                message: `What is the role's salary?`,
+                message: `What is the role's salary 💲?`,
               }
             ])
             .then((answer) => {
@@ -179,7 +236,7 @@ const addRole = () => {
   
               connection.query(sql, crit, (error) => {
                 if (error) throw error;
-                console.log(`The new role has been created successfully`);
+                console.log(`The new role has been created successfully ✔️`);
                 askUser();
               });
             });
@@ -231,63 +288,4 @@ async function addEmployee() {
     }
   }
 
-// Update Employee Role
 
-const getEmployeesList = async () => {
-    const results = await query(`SELECT id AS value, CONCAT_WS(' ', first_name, last_name) AS name FROM employees;`);
-
-    return JSON.parse(JSON.stringify(results));
-}
-
-const getRolesList = async () => {
-    const results = await query(`SELECT id AS value, title AS name FROM roles;`);
-
-    return JSON.parse(JSON.stringify(results));
-}
-
-const getEmployeeRoleById = async (employeeId) => {
-    const results = await query(`SELECT title FROM roles
-        WHERE id = (SELECT role_id FROM employees WHERE id = ?);`, [employeeId]);
-
-    return results[0].title;
-}
-
-const updateEmployeeRole = async () => {
-    const employeesList = await getEmployeesList();
-
-    const { employeeId } = await inquirer.prompt({
-            name: 'employeeId',
-            type: 'list',
-            message: `Select the employee:`,
-            choices: employeesList,
-        });
-
-    const currentRole = await getEmployeeRoleById(employeeId);
-
-    const { isContinue } = await inquirer.prompt({
-        name: 'isContinue',
-        type: 'confirm',
-        message: `The employee's current role is '${currentRole}'. Do you want update it?`,
-    });
-
-    if (isContinue) {
-        const rolesList = await getRolesList();
-
-        const { roleId } = await inquirer.prompt({
-            name: 'roleId',
-            type: 'list',
-            message: `Select the new employee's role`,
-            choices: rolesList,
-        });
-
-        await query(`UPDATE employees SET role_id = ? WHERE id = ?;`, [roleId, employeeId]);
-
-        console.log(`The employee's role updated!\n`);
-    }
-
-    askUser();
-}
-
-const exitApp = () => {
-    connection.end();
-}

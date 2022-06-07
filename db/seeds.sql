@@ -1,6 +1,7 @@
 USE jv_employees_db
 
 -- Departments Row
+-- Insert department name --
 INSERT INTO departments (name)
 VALUES ("Engineering"),  
         ("Finace"),      
@@ -8,6 +9,7 @@ VALUES ("Engineering"),
         ("Sales");       
 
 -- Roles Table
+-- Insert multiple roles, title, salary, etc --
 INSERT INTO roles (title, salary, department_id)
 VALUES ("Sales Lead", "100000", 4),
         ("Salespersone", "80000", 4),
@@ -19,6 +21,7 @@ VALUES ("Sales Lead", "100000", 4),
         ("Lawyer", "190000", 3);
 
 -- Employees Table
+-- Insert multiple employees first, last name, etc --
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES ("Zlatan", "Ibrahimovic", 1, 3),
         ("Michael", "Bradley", 2, 1),
