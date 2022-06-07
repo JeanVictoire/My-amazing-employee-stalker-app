@@ -33,6 +33,8 @@ Navigate to the folder of the project files and run node server.js or npm start 
 <img src="./My-amazing-employee-stalker-app.gif" alt="My-amazing-employee-stalker-app" height="500">
 
 Application preview:
+![sqlEmployees](https://user-images.githubusercontent.com/100246393/172475610-d5071fe6-c09c-4d42-a5db-623cad02abf0.png)
+
 
 ## Credits
 
